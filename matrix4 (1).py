@@ -1,6 +1,8 @@
 import random
 from multiprocessing import Pool, cpu_count
 import numpy as np
+import os
+from multiprocessing import Pool
 
 # Функция перемножения элементов матриц
 def element(index, A, B):
@@ -21,12 +23,17 @@ def parallel_multiply_matrices(A, B):
 
     # Создаем пул процессов, используя количество доступных ядер процессора
     with Pool(cpu_count()) as pool:
+    # Определяем количество параллельных потоков
+    num_threads = os.cpu_count()
+
+    # Создаем пул процессов
+    with Pool(num_threads) as pool:
         # Выполняем перемножение элементов матриц параллельно с помощью функции element
         result_elements = pool.starmap(element, [(index, A, B) for index in indices])
 
     # Преобразуем список результатов в матрицу
     result_matrix = np.reshape(result_elements, (len(A), len(B[0])))
-
+    
     return result_matrix
 
 if __name__ == '__main__':
